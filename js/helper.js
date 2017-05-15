@@ -176,9 +176,10 @@ function initializeMap() {
       content: name
     });
 
-    // hmmmm, I wonder what this is about...
+    // InfoWindow code, source: https://developers.google.com/maps/documentation/javascript/examples/place-details
     google.maps.event.addListener(marker, 'click', function() {
-      // your code goes here!
+      infoWindow.setContent('<div>' + marker.title + '</div>');
+      infoWindow.open(map, this);
     });
 
     // this is where the pin actually gets added to the map.
