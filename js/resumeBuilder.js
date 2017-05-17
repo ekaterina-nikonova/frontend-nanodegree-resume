@@ -36,14 +36,8 @@ var bio = {
   welcomeMessage: "Hello! I am seeking full-time employment as a web or Android developer. My core skills are Java development and front-end web technologies.",
   skills: ['HTML', 'CSS', 'Bootstrap', 'JavaScript'],
   display: function() {
-    $('#header').prepend(HTMLheaderRole.replace('%data%', bio.role));
-    $('#header').prepend(HTMLheaderName.replace('%data%', bio.name));
-    $('#header').prepend(HTMLbioPic.replace('%data%', bio.biopic));
-
-    $('#topContacts').append(HTMLmobile.replace('%data%', bio.contacts.mobile));
-    $('#topContacts').append(HTMLemail.replace('%data%', bio.contacts.email));
-    $('#topContacts').append(HTMLgithub.replace('%data%', bio.contacts.github));
-    $('#topContacts').append(HTMLlocation.replace('%data%', bio.contacts.location));
+    $('#header').prepend(HTMLbioPic.replace('%data%', bio.biopic), HTMLheaderName.replace('%data%', bio.name), HTMLheaderRole.replace('%data%', bio.role));
+    $('#topContacts, #footerContacts').append(HTMLmobile.replace('%data%', bio.contacts.mobile), HTMLemail.replace('%data%', bio.contacts.email), HTMLgithub.replace('%data%', bio.contacts.github), HTMLlocation.replace('%data%', bio.contacts.location));
 
     $('#header').append(HTMLwelcomeMsg.replace('%data%', bio.welcomeMessage));
 
@@ -56,8 +50,6 @@ var bio = {
 
   }
 };
-
-bio.display();
 
 var education = {
   schools: [{
@@ -73,7 +65,8 @@ var education = {
       school: "Udacity",
       dates: "April &ndash; July 2017",
       url: "https://www.udacity.com/course/front-end-web-developer-nanodegree--nd001",
-      certificate: "#"
+      // TODO: update the link after finishing the ND
+      certificate: "https://www.udacity.com/"
     },
     {
       title: "Android App Development Specialization",
@@ -86,16 +79,14 @@ var education = {
   display: function() {
     $('#education').append(HTMLschoolStart);
     education.schools.forEach(function(school, index) {
+      /* Without 'url's the code shouldn't compile, because there'll be misleading "empty" links. */
+      if (!school.hasOwnProperty('url')) throw 'School URL not found!';
       if (school.hasOwnProperty('name')) {
-        // I'm sure there's a better way to replace '#' in a string var, but I couldn't find anything that wouldn't require adding a CSS class in helper.js.
-        if (school.hasOwnProperty('url')) {
-          HTMLschoolName = '<a href = "' + school.url + '">%data%';
-        }
-        var schoolName = HTMLschoolName.replace('%data%', school.name);
+        var aSchool = HTMLschoolName.replace('#', school.url).replace('%data%', school.name);
         if (school.hasOwnProperty('degree')) {
-          schoolName = schoolName.concat(HTMLschoolDegree.replace('%data%', school.degree));
+          aSchool = aSchool.concat(HTMLschoolDegree.replace('%data%', school.degree));
         }
-        $('.education-entry:last').append(schoolName);
+        $('.education-entry:last').append(aSchool);
       }
       if (school.hasOwnProperty('dates')) {
         $('.education-entry:last').append(HTMLschoolDates.replace('%data%', school.dates));
@@ -113,15 +104,13 @@ var education = {
     $('#education').append(HTMLonlineClasses);
     $('#education').append(HTMLschoolStart);
     education.onlineCourses.forEach(function(course, index) {
+      if (!course.hasOwnProperty('url')) throw 'Course URL not found!';
       if (course.hasOwnProperty('title')) {
-        if (course.hasOwnProperty('url')) {
-          HTMLonlineTitle = '<a href="' + course.url + '">%data%';
-        }
-        var courseName = HTMLonlineTitle.replace('%data%', course.title);
+        var aCourse = HTMLonlineTitle.replace('#', course.url).replace('%data%', course.title);
         if (course.hasOwnProperty('school')) {
-          courseName = courseName.concat(HTMLonlineSchool.replace('%data%', course.school));
+          aCourse = aCourse.concat(HTMLonlineSchool.replace('%data%', course.school));
         }
-        $('.education-entry:last').append(courseName);
+        $('.education-entry:last').append(aCourse);
       }
       if (course.hasOwnProperty('dates')) {
         $('.education-entry:last').append(HTMLonlineDates.replace('%data%', course.dates));
@@ -137,8 +126,6 @@ var education = {
   }
 };
 
-education.display();
-
 var work = {
   jobs: [{
     employer: "Freelance",
@@ -151,11 +138,10 @@ var work = {
   display: function() {
     work.jobs.forEach(function(job) {
       $('#workExperience').append(HTMLworkStart);
-      if (job.hasOwnProperty('url')) {
-        HTMLworkEmployer = '<a href="' + job.url + '">%data%';
-      }
+      if (!job.hasOwnProperty('url')) throw 'Job URL not found!';
       if (job.hasOwnProperty('employer') && job.hasOwnProperty('title')) {
-        $('.work-entry:last').append(HTMLworkEmployer.replace('%data%', job.employer).concat(HTMLworkTitle.replace('%data%', job.title)));
+        var jobTitle = HTMLworkEmployer.replace('#', job.url).replace('%data%', job.employer).concat(HTMLworkTitle.replace('%data%', job.title));
+        $('.work-entry:last').append(jobTitle);
       }
       if (job.hasOwnProperty('location')) {
         $('.work-entry:last').append(HTMLworkLocation.replace('%data%', job.location));
@@ -170,33 +156,37 @@ var work = {
   }
 };
 
-work.display();
-
 var projects = {
   projects: [{
       title: "Mock Paint",
       dates: "July 2017 &ndash; August 2017",
       description: "Mock Paint is a graphic tool for Android developers. It allows you to create mockup graphic assets, such as icons and images, for your prototypes quickly and easily.",
-      images: ['images/mobile-mockpaint-300.jpg', 'images/icon-mockpaint-200.jpg']
+      images: ['images/mobile-mockpaint-300.jpg', 'images/icon-mockpaint-200.jpg'],
+      url: "https://github.com/ekaterina-nikonova"
     },
     {
       title: "Career Advisor",
       dates: "August 2017 &ndash; September 2017",
       description: "Career Advisor scans job descriptions across numerous websites and finds online courses that match your desirable career path.",
-      images: ['images/mobile-advisor-300.jpg', 'images/icon-advisor-200.jpg']
+      images: ['images/mobile-advisor-300.jpg', 'images/icon-advisor-200.jpg'],
+      url: "https://github.com/ekaterina-nikonova"
     },
     {
       title: "H&AElig;&AElig;?",
       dates: "January 2018 &ndash; June 2018",
       description: "This app helps language learners improve their pronunciation. Listen to the audio sample and repeat, and the app will tell you how much your utterance resembles the original.",
-      images: ['images/mobile-hae-300.jpg', 'images/icon-hae-200.jpg']
+      images: ['images/mobile-hae-300.jpg', 'images/icon-hae-200.jpg'],
+      url: "https://github.com/ekaterina-nikonova"
     }
   ],
   display: function() {
     projects.projects.forEach(function(project) {
+      /* Here, too, I made 'url' an obligatory property for objects in 'projects'. */
+      if (!project.hasOwnProperty('url')) throw 'Project URL not found!';
       $('#projects').append(HTMLprojectStart);
       if (project.hasOwnProperty('title')) {
-        $('.project-entry:last').append(HTMLprojectTitle.replace('%data%', project.title));
+        var projTitle = HTMLprojectTitle.replace('#', project.url).replace('%data%', project.title);
+        $('.project-entry:last').append(projTitle);
       }
       if (project.hasOwnProperty('dates')) {
         $('.project-entry:last').append(HTMLprojectDates.replace('%data%', project.dates));
@@ -213,6 +203,9 @@ var projects = {
   }
 };
 
+bio.display();
+education.display();
+work.display();
 projects.display();
 
 /*
@@ -239,14 +232,6 @@ $('#name').click(inName);
  * Adding a map
  */
 $('#mapDiv').append(googleMap);
-
-/*
- * Footer contacts
- */
-$('#footerContacts').append(HTMLmobile.replace('%data%', bio.contacts.mobile));
-$('#footerContacts').append(HTMLemail.replace('%data%', bio.contacts.email));
-$('#footerContacts').append(HTMLgithub.replace('%data%', bio.contacts.github));
-$('#footerContacts').append(HTMLlocation.replace('%data%', bio.contacts.location));
 
 /*
  * All links should open in a new tab
